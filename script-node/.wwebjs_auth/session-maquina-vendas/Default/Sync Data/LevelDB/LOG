@@ -1,0 +1,4 @@
+2026/09/30-16:11:33.919 4708 Creating DB C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\Sync Data\LevelDB since it was missing.
+2026/09/30-16:11:34.083 4708 Reusing MANIFEST C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\Sync Data\LevelDB/MANIFEST-000001
+2026/09/30-16:11:34.083 4708 Recovering log #3
+2026/09/30-16:11:34.084 4708 Reusing old log C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\Sync Data\LevelDB/000003.log 

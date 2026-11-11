@@ -1,0 +1,494 @@
+[
+  {
+    "telefone": "555191999935",
+    "nome": "bruno frança",
+    "dataDisparo": "2026-09-22T23:45:40.114Z",
+    "status": "cobrado",
+    "campanhaId": "teste"
+  },
+  {
+    "telefone": "92445043855371@lid",
+    "nome": "Julia Lopes",
+    "dataDisparo": "2026-09-23T00:03:00.369Z",
+    "status": "atendimento_humano",
+    "campanhaId": "teste4"
+  },
+  {
+    "telefone": "105617675042916@lid",
+    "nome": "Bruno França",
+    "dataDisparo": "2026-09-23T20:21:09.457Z",
+    "status": "atendimento_humano",
+    "campanhaId": "testeteste5"
+  },
+  {
+    "telefone": "121629816414219@lid",
+    "nome": "matheus pappin",
+    "dataDisparo": "2026-09-25T13:30:26.329Z",
+    "status": "atendimento_humano",
+    "campanhaId": "camp_1790343025766"
+  },
+  {
+    "telefone": "5551991463065",
+    "nome": "Psicóloga Eduarda Marcolino",
+    "dataDisparo": "2026-09-30T14:16:49.202Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "279856461967478@lid"
+  },
+  {
+    "telefone": "5551998081361",
+    "nome": "Psicóloga Susete Satte",
+    "dataDisparo": "2026-09-30T14:20:20.839Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "68998850998394@lid"
+  },
+  {
+    "telefone": "5551984991973",
+    "nome": "Psicóloga Priscila Manke",
+    "dataDisparo": "2026-09-30T14:24:26.573Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "12489781719177@lid"
+  },
+  {
+    "telefone": "5551991751347",
+    "nome": "Psicóloga Infantojuvenil | Tatiane Moreira",
+    "dataDisparo": "2026-09-30T13:56:43.501Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "49100217131175@lid"
+  },
+  {
+    "telefone": "5551991151657",
+    "nome": "Espaço Fisioter",
+    "dataDisparo": "2026-09-30T14:16:43.928Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731",
+    "lid": "56659275686008@lid"
+  },
+  {
+    "telefone": "5551981703993",
+    "nome": "Silvia Bitencourt. Psicóloga Clínica",
+    "dataDisparo": "2026-09-30T14:00:39.267Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "263105468739802@lid"
+  },
+  {
+    "telefone": "5551995064052",
+    "nome": "Larissa Kühn Estética Avançada",
+    "dataDisparo": "2026-09-30T14:56:08.313Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940",
+    "lid": "69587831902208@lid"
+  },
+  {
+    "telefone": "5551992657507",
+    "nome": "PSICÓLOGA THAILANE SOUZA",
+    "dataDisparo": "2026-09-30T14:04:17.020Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "165416991228039@lid"
+  },
+  {
+    "telefone": "5551995647584",
+    "nome": "Dra. Silvana Seibert | Dermatologia",
+    "dataDisparo": "2026-09-30T14:56:08.616Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777076142",
+    "lid": "102302631366822@lid"
+  },
+  {
+    "telefone": "5551992988494",
+    "nome": "Consultório de Psicologia - Psicólogo Gilberto Ribas",
+    "dataDisparo": "2026-09-30T14:06:36.394Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "27440546095313@lid"
+  },
+  {
+    "telefone": "5551981596780",
+    "nome": "Psicóloga Milena Goldani",
+    "dataDisparo": "2026-09-30T14:10:10.440Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "84628085956734@lid"
+  },
+  {
+    "telefone": "5551984941457",
+    "nome": "Psicóloga Larissa Freitas",
+    "dataDisparo": "2026-09-30T14:13:26.413Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591",
+    "lid": "97225258590298@lid"
+  },
+  {
+    "telefone": "5551989957317",
+    "nome": "Louise Barbosa - Comer Intuitivo e Transtornos Alimentares - Online",
+    "dataDisparo": "2026-09-30T14:56:10.898Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777921992",
+    "lid": "149404933738514@lid"
+  },
+  {
+    "telefone": "5551981643636",
+    "nome": "LKL Estética Automotiva | Porto Alegre",
+    "dataDisparo": "2026-09-30T14:19:40.873Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940",
+    "lid": "11016624701574@lid"
+  },
+  {
+    "telefone": "5551981489866",
+    "nome": "Dra. Júlia Bom - Dermatologista",
+    "dataDisparo": "2026-09-30T14:20:08.971Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777076142",
+    "lid": "202894959726694@lid"
+  },
+  {
+    "telefone": "5551984054552",
+    "nome": "Alimentas Ideias Nutritivas",
+    "dataDisparo": "2026-09-30T14:23:45.067Z",
+    "status": "respondido",
+    "campanhaId": "camp_1790777921992",
+    "lid": "197113262694567@lid"
+  },
+  {
+    "telefone": "5551999695154",
+    "nome": "Dra. Berenice do Valle Capra - Consultório De Dermatologia",
+    "dataDisparo": "2026-09-30T14:23:48.440Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777076142",
+    "lid": "230476702855282@lid"
+  },
+  {
+    "telefone": "5551981640656",
+    "nome": "Onodera Estética - Porto Alegre Bela Vista",
+    "dataDisparo": "2026-09-30T14:24:14.805Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940",
+    "lid": "187483962781910@lid"
+  },
+  {
+    "telefone": "5551981940019",
+    "nome": "Fisioterapeuta em Porto Alegre / Silvia Johnson / Alívio da dor crônica / Cefaleias / Bruxismo/ Liberação Miofascial",
+    "dataDisparo": "2026-09-30T14:24:47.427Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731",
+    "lid": "243876866572301@lid"
+  },
+  {
+    "telefone": "5551997072955",
+    "nome": "Clínica Dra Roberta Flach Perim | Dermatologia Estética em Porto Alegre - Liftera 2, Tricologia, Fios APTOS e Procedimentos",
+    "dataDisparo": "2026-09-30T14:26:06.273Z",
+    "status": "respondido",
+    "campanhaId": "camp_1790777076142",
+    "lid": "137568523968652@lid"
+  },
+  {
+    "telefone": "5551993380386",
+    "nome": "Estética Chiéri | Cílios | Lash Lifting | Unhas | Porto Alegre",
+    "dataDisparo": "2026-09-30T14:26:36.085Z",
+    "status": "atendimento_humano",
+    "campanhaId": "camp_1790777025940",
+    "lid": "157256217788664@lid"
+  },
+  {
+    "telefone": "5551992750195",
+    "nome": "Nutricionista Manoela Gajko - Online",
+    "dataDisparo": "2026-09-30T14:26:36.649Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777921992",
+    "lid": "257092749406390@lid"
+  },
+  {
+    "telefone": "555133412156",
+    "nome": "Fisiotrauma Clínica",
+    "dataDisparo": "2026-09-30T14:27:08.684Z",
+    "status": "respondido",
+    "campanhaId": "camp_1790776745731",
+    "lid": "209740500054019@lid"
+  },
+  {
+    "telefone": "5551998555448",
+    "lid": "69647340675201@lid",
+    "telefoneOriginal": "5551998555448",
+    "leadId": "5750fb3d-221b-49bc-85b8-e97c3d3061c9",
+    "nome": "Giovana Fernandes- Nutricionista",
+    "dataDisparo": "2026-09-30T17:16:49.698Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777921992"
+  },
+  {
+    "telefone": "5551992792313",
+    "lid": "59996515622982@lid",
+    "telefoneOriginal": "5551992792313",
+    "leadId": "68f7cf8d-5473-4167-b2e9-6614e8e1d70c",
+    "nome": "Dra. Carolina Merten, Dermatologista em Porto Alegre",
+    "dataDisparo": "2026-09-30T17:17:25.650Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777076142"
+  },
+  {
+    "telefone": "5551992325555",
+    "lid": "212609655672862@lid",
+    "telefoneOriginal": "5551992325555",
+    "leadId": "3ce96c10-cb62-419b-bfee-8974a425ea42",
+    "nome": "Luana Masur",
+    "dataDisparo": "2026-09-30T17:18:56.584Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777921992"
+  },
+  {
+    "telefone": "5551989866006",
+    "lid": "215010391404642@lid",
+    "telefoneOriginal": "5551989866006",
+    "leadId": "1a1ca605-82a2-41a6-8c79-14f3db30752a",
+    "nome": "Dra. Simone Arenzon",
+    "dataDisparo": "2026-09-30T17:19:33.394Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777076142"
+  },
+  {
+    "telefone": "5551986014737",
+    "lid": "77661682585670@lid",
+    "telefoneOriginal": "5551986014737",
+    "leadId": "577fb9a1-8faa-4bc9-9a50-1c1696340894",
+    "nome": "Camila Mayer - Nutricionista Infantil",
+    "dataDisparo": "2026-09-30T17:21:32.564Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777921992"
+  },
+  {
+    "telefone": "5551998060598",
+    "lid": "184679315595315@lid",
+    "telefoneOriginal": "5551998060598",
+    "leadId": "684b6d63-311d-4fa1-afa1-b00e241dc6f9",
+    "nome": "Aline Santos - Psicóloga",
+    "dataDisparo": "2026-09-30T17:24:37.709Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551982364129",
+    "lid": "60898358083685@lid",
+    "telefoneOriginal": "5551982364129",
+    "leadId": "29096cfb-6477-4bb9-b7fc-7bc8c0fa4fb6",
+    "nome": "Espaço Joice Pires Saúde & Beleza",
+    "dataDisparo": "2026-09-30T17:26:22.450Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551996955323",
+    "lid": "256542708351084@lid",
+    "telefoneOriginal": "5551996955323",
+    "leadId": "d106d013-2427-48fa-a14c-3f85c4b305b3",
+    "nome": "Débora Procópio - Clínica de Limpeza de Pele - Clínica Estética - Clínica Estética em Porto Alegre",
+    "dataDisparo": "2026-09-30T17:28:35.568Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551985446535",
+    "lid": "261975858794664@lid",
+    "telefoneOriginal": "5551985446535",
+    "leadId": "ac729639-c751-4a6e-84d5-fd13a80ac0e7",
+    "nome": "Psicóloga e Sexóloga Raianny Delize - Terapia de Casal e Individual",
+    "dataDisparo": "2026-09-30T17:29:39.741Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551992274949",
+    "lid": "223987024056451@lid",
+    "telefoneOriginal": "5551992274949",
+    "leadId": "590e16fd-78de-4474-b1c0-a3e6cfd88158",
+    "nome": "B&B Centro de Estética Avançada",
+    "dataDisparo": "2026-09-30T17:30:40.693Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551989386123",
+    "lid": "103169493340221@lid",
+    "telefoneOriginal": "5551989386123",
+    "leadId": "98f25144-4dd2-4e73-8477-4a98a743e0a3",
+    "nome": "RENNOVAR CENTRO ESTÉTICO",
+    "dataDisparo": "2026-09-30T17:33:30.256Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5554991098048",
+    "lid": "143482056368176@lid",
+    "telefoneOriginal": "5554991098048",
+    "leadId": "31ee3072-9be8-4f29-89d6-5d704f73f31b",
+    "nome": "PSICÓLOGA Patrícia Feck",
+    "dataDisparo": "2026-09-30T17:34:01.724Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551993848243",
+    "lid": "215483223642260@lid",
+    "telefoneOriginal": "5551993848243",
+    "leadId": "b812f2a1-6a52-4495-99e6-59a21d461f72",
+    "nome": "Fisioterapia Coluna Porto Alegre - Miguel Nunes",
+    "dataDisparo": "2026-09-30T17:35:08.953Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731"
+  },
+  {
+    "telefone": "555130611493",
+    "lid": "71339591376927@lid",
+    "telefoneOriginal": "555130611493",
+    "leadId": "9ccba10a-bd8f-470b-9b67-f2f82e264516",
+    "nome": "Estética Marisa",
+    "dataDisparo": "2026-09-30T17:37:28.129Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551996242006",
+    "lid": "235901129076761@lid",
+    "telefoneOriginal": "5551996242006",
+    "leadId": "71095d08-a014-4687-bb3c-b5d2bd05991c",
+    "nome": "Clínica de Psicologia Josiane Gomes Martins",
+    "dataDisparo": "2026-09-30T17:38:03.346Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551992180300",
+    "lid": "29459818246306@lid",
+    "telefoneOriginal": "5551992180300",
+    "leadId": "cb12726e-1c3a-44e5-92d3-d74902f88aaa",
+    "nome": "IGSAUDEEESTETICA",
+    "dataDisparo": "2026-09-30T17:39:45.234Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551996051036",
+    "lid": "227526513324242@lid",
+    "telefoneOriginal": "5551996051036",
+    "leadId": "4ce480dc-cbb1-45aa-9cb7-1ec92400a233",
+    "nome": "Patrícia Menzen Fisioterapeuta em Porto Alegre - Atendimento Especializado no Tratamento da Coluna - CREFITO5 210178|F",
+    "dataDisparo": "2026-09-30T17:39:49.117Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731"
+  },
+  {
+    "telefone": "5551992886282",
+    "lid": "49319159799941@lid",
+    "telefoneOriginal": "5551992886282",
+    "leadId": "9c71b38c-c44f-4fac-ba90-ff91028065ee",
+    "nome": "Thais Couto I Psicóloga e Coach - Consultório de Psicologia",
+    "dataDisparo": "2026-09-30T17:43:03.694Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "555133445106",
+    "lid": "86891600810115@lid",
+    "telefoneOriginal": "555133445106",
+    "leadId": "c355e868-3035-4257-a048-aaa28e58a06c",
+    "nome": "Essencial Estética",
+    "dataDisparo": "2026-09-30T17:44:31.284Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551998003003",
+    "lid": "111067938160669@lid",
+    "telefoneOriginal": "5551998003003",
+    "leadId": "7585936f-ab28-4c6f-bf4e-1aa263b0f5af",
+    "nome": "Attento Fisioterapia",
+    "dataDisparo": "2026-09-30T17:44:33.547Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731"
+  },
+  {
+    "telefone": "5551996171788",
+    "lid": "115238384959703@lid",
+    "telefoneOriginal": "5551996171788",
+    "leadId": "047888b6-d204-44de-b819-b6b3d6d8a41f",
+    "nome": "Studio Karina Bornholdt: Estética Avançada em Porto Alegre",
+    "dataDisparo": "2026-09-30T17:46:44.540Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551996451106",
+    "lid": "204904987676817@lid",
+    "telefoneOriginal": "5551996451106",
+    "leadId": "1ee11e86-74ca-44bb-8fbf-3a22b2f66c34",
+    "nome": "Psicóloga | Manoella Martins | Terapia Cognitivo-Comportamental",
+    "dataDisparo": "2026-09-30T17:46:54.398Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551981503097",
+    "lid": "264776294871116@lid",
+    "telefoneOriginal": "5551981503097",
+    "leadId": "4985a4f8-d85b-4206-929e-af8d0335cd5a",
+    "nome": "Felipe Vieira | Fisioterapia Esportiva & Reabilitação",
+    "dataDisparo": "2026-09-30T17:48:34.875Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731"
+  },
+  {
+    "telefone": "5551999039054",
+    "lid": "104131616342072@lid",
+    "telefoneOriginal": "5551999039054",
+    "leadId": "3efd0427-59a2-4149-95f2-ed878a082ec3",
+    "nome": "Annelise Germano - Estética Personalizada",
+    "dataDisparo": "2026-09-30T17:49:47.385Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790777025940"
+  },
+  {
+    "telefone": "5551992575806",
+    "lid": "263096962662585@lid",
+    "telefoneOriginal": "5551992575806",
+    "leadId": "30f216b1-b88b-410e-b0f2-70d12bfff640",
+    "nome": "Psicóloga Porto Alegre Maiala",
+    "dataDisparo": "2026-09-30T17:51:54.550Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551996009462",
+    "lid": "144684596899916@lid",
+    "telefoneOriginal": "5551996009462",
+    "leadId": "c530e46c-848c-4f51-b30e-bf35624d6035",
+    "nome": "Pilates Humanize Sede 1 | Pilates e Fisioterapia Zona Norte de Porto Alegre",
+    "dataDisparo": "2026-09-30T17:52:52.884Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790776745731"
+  },
+  {
+    "telefone": "5551997880996",
+    "lid": "125640762224660@lid",
+    "telefoneOriginal": "5551997880996",
+    "leadId": "2ec30aa6-9a89-409b-824d-ce41c19c2b9b",
+    "nome": "Monique Andrade Machado | Psicóloga Clínica",
+    "dataDisparo": "2026-09-30T17:54:43.913Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  },
+  {
+    "telefone": "5551996747469",
+    "lid": "134359529042158@lid",
+    "telefoneOriginal": "5551996747469",
+    "leadId": "919ea102-f02b-4590-9cee-09d333769353",
+    "nome": "Juliane Manica | Psicóloga Clínica",
+    "dataDisparo": "2026-09-30T17:57:03.094Z",
+    "status": "aguardando_resposta",
+    "campanhaId": "camp_1790772591591"
+  }
+]

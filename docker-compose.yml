@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  evolution-api:
+    image: evoapicloud/evolution-api:v2.2.0
+    container_name: evolution_api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_URL=http://localhost:8080
+      - DOCKER_ENV=true
+      - LOG_LEVEL=ERROR,WARN,DEBUG,INFO,LOG,VERBOSE,DARK,WEBHOOKS
+      # Autenticação Segura
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=B6D711FCDE4D4FD5936544120E713976
+      # Conexão com Banco de Dados
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://postgres:postgres@evolution-postgres:5432/evolution?schema=public
+      # Configuração de Cache (Redis) - Desabilitado para evitar corrupção de sessão do Baileys
+      - CACHE_REDIS_ENABLED=false
+      - CACHE_REDIS_URI=redis://evolution-redis:6379/0
+      # Configuração Global de Webhooks (Aponta pro script Node local)
+      - WEBHOOK_GLOBAL_URL=http://host.docker.internal:5000/webhook
+      - WEBHOOK_GLOBAL_ENABLED=false
+      
+      # FIX PARA O LOOP DE QR CODE (Versão do WhatsApp Web)
+      - CONFIG_SESSION_PHONE_CLIENT=Evolution
+      - CONFIG_SESSION_PHONE_VERSION=2.3000.1043857760
+    volumes:
+      - evolution_instances:/evolution/instances
+    depends_on:
+      - evolution-postgres
+      - evolution-redis
+
+  evolution-postgres:
+    image: postgres:15-alpine
+    container_name: evolution_postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=evolution
+    ports:
+      - "5433:5432" # Porta alterada para não conflitar caso já tenha um postgres rodando local
+    volumes:
+      - evolution_db:/var/lib/postgresql/data
+    restart: always
+
+  evolution-redis:
+    image: redis:alpine
+    container_name: evolution_redis
+    ports:
+      - "6380:6379" # Porta alterada para não conflitar
+    command: redis-server --appendonly yes
+    volumes:
+      - evolution_redis_data:/data
+    restart: always
+
+volumes:
+  evolution_instances:
+  evolution_db:
+  evolution_redis_data:

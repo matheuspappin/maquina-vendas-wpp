@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máquina de Vendas - Multi-Campanhas & Cluster Multi-Chip</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --border: #334155;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --purple: #8b5cf6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.75rem;
+        }
+
+        h1 { font-size: 1.4rem; margin-bottom: 1.25rem; font-weight: 600; }
+        h2 { font-size: 1.15rem; margin-bottom: 0.85rem; color: #94a3b8; }
+        .form-group { margin-bottom: 1.25rem; }
+        label { display: block; margin-bottom: 0.4rem; font-weight: 500; color: #cbd5e1; font-size: 0.9rem; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 0.7rem; background: #0f172a; border: 1px solid var(--border); border-radius: 6px; color: var(--text-color); }
+        textarea { width: 100%; padding: 0.7rem; background: #0f172a; border: 1px solid var(--border); border-radius: 6px; color: var(--text-color); min-height: 95px; font-family: inherit; resize: vertical; }
+        textarea:focus, input:focus, select:focus { outline: none; border-color: var(--primary); }
+        button { width: 100%; padding: 0.85rem; background-color: var(--primary); color: white; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #475569; cursor: not-allowed; }
+
+        .btn-small { width: auto; padding: 0.45rem 0.85rem; font-size: 0.8rem; margin-right: 0.4rem; margin-top: 0.4rem; }
+        .btn-danger { background-color: var(--error); }
+        .btn-danger:hover { background-color: #dc2626; }
+        .btn-warning { background-color: var(--warning); }
+        .btn-warning:hover { background-color: #d97706; }
+
+        .terminal { background-color: #000; border-radius: 8px; padding: 1rem; height: 280px; overflow-y: auto; font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; border: 1px solid #334155; }
+        .log-line { margin-bottom: 0.25rem; word-wrap: break-word; }
+        .log-info { color: #60a5fa; }
+        .log-success { color: #34d399; }
+        .log-warning { color: #fbbf24; }
+        .log-error { color: #f87171; }
+        .log-system { color: #a78bfa; font-weight: bold; }
+        
+        .qr-box { background: white; padding: 0.75rem; border-radius: 8px; display: inline-block; margin-top: 0.5rem; }
+
+        /* Dashboard de Campanhas */
+        .campaign-item { background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+        .campaign-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .campaign-title { font-weight: 600; font-size: 1.05rem; }
+        .campaign-badge { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .badge-running { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge-paused { background: rgba(245, 158, 11, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+        .badge-stopped { background: rgba(239, 68, 68, 0.2); color: var(--error); border: 1px solid var(--error); }
+        .badge-finished { background: rgba(59, 130, 246, 0.2); color: var(--primary); border: 1px solid var(--primary); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 0.75rem; }
+        .stat-box { background: #1e293b; padding: 0.4rem; border-radius: 6px; text-align: center; }
+        .stat-val { font-size: 1.15rem; font-weight: bold; color: var(--primary); }
+        .stat-label { font-size: 0.7rem; color: #94a3b8; }
+
+        /* MULTI-CHIP CLUSTER UI */
+        .chip-nav { display: flex; gap: 0.4rem; background: #0f172a; padding: 0.4rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 1rem; overflow-x: auto; }
+        .chip-tab-btn { flex: 1; min-width: 90px; padding: 0.5rem 0.4rem; background: transparent; border: 1px solid transparent; border-radius: 6px; color: #94a3b8; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.35rem; transition: all 0.2s; }
+        .chip-tab-btn:hover { background: #1e293b; color: #f8fafc; }
+        .chip-tab-btn.active { background: #1e293b; color: #f8fafc; border-color: var(--primary); }
+        
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .dot-green { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
+        .dot-yellow { background-color: var(--warning); }
+        .dot-orange { background-color: #f97316; }
+        .dot-gray { background-color: #64748b; }
+
+        /* Barra de Progresso Cota Diária */
+        .quota-bar-bg { width: 100%; height: 10px; background: #0f172a; border-radius: 5px; overflow: hidden; border: 1px solid #334155; margin-top: 0.3rem; }
+        .quota-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.4s ease; }
+        .quota-bar-fill.warning { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+
+        /* Fila Central Card */
+        .queue-monitor-card { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid #3b82f6; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.75rem; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); }
+        .queue-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+        .queue-status-badge { padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 0.4rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- LADO ESQUERDO: CLUSTER DE CHIPS & LANÇAMENTO DE CAMPANHA -->
+        <div>
+            <!-- CLUSTER MULTI-CHIP (1 a 5 Chips) -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <h2>📱 Cluster Multi-Chip WhatsApp (1 a 5 Chips)</h2>
+                    <span id="activeChipsSummary" style="font-size: 0.8rem; color: #38bdf8; font-weight: 600;">1/5 Chips Ativos</span>
+                </div>
+                
+                <!-- Abas dos Chips -->
+                <div class="chip-nav" id="chipNavTabs">
+                    <button type="button" class="chip-tab-btn active" onclick="switchChipTab('chip_1')">
+                        <span class="status-dot dot-gray" id="dot_chip_1"></span> Chip 1
+                    </button>
+                    <button type="button" class="chip-tab-btn" onclick="switchChipTab('chip_2')">
+                        <span class="status-dot dot-gray" id="dot_chip_2"></span> Chip 2
+                    </button>
+                    <button type="button" class="chip-tab-btn" onclick="switchChipTab('chip_3')">
+                        <span class="status-dot dot-gray" id="dot_chip_3"></span> Chip 3
+                    </button>
+                    <button type="button" class="chip-tab-btn" onclick="switchChipTab('chip_4')">
+                        <span class="status-dot dot-gray" id="dot_chip_4"></span> Chip 4
+                    </button>
+                    <button type="button" class="chip-tab-btn" onclick="switchChipTab('chip_5')">
+                        <span class="status-dot dot-gray" id="dot_chip_5"></span> Chip 5
+                    </button>
+                </div>
+
+                <!-- Painel de Detalhes do Chip Selecionado -->
+                <div id="chipDetailArea" style="background: #0f172a; border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;">
+                    <p style="color: #94a3b8; text-align: center;">Carregando dados dos chips...</p>
+                </div>
+
+                <!-- Sessão CRM -->
+                <div id="crmUserArea" style="margin-top: 15px; padding: 8px 12px; background: #0f172a; border: 1px dashed #334155; border-radius: 6px; font-size: 0.85rem; text-align: center;">
+                    Buscando sessão CRM...
+                </div>
+            </div>
+
+            <!-- Formulário Central da Campanha -->
+            <div class="card" style="margin-bottom: 0;">
+                <h1>🚀 Lançar Nova Campanha</h1>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.25rem;">As campanhas rodam de forma coordenada na Fila Única Central, intercalando leads entre os chips conectados.</p>
+
+                <form id="campaignForm">
+                    <div class="form-group">
+                        <label for="campaignName">Nome da Campanha</label>
+                        <input type="text" id="campaignName" placeholder="Ex: Clínicas SP - Abril" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="margin-bottom: 0.4rem; font-weight: 600;">Origem dos Leads:</label>
+                        <div style="display: flex; gap: 1.5rem; margin-bottom: 0.6rem; background: #0f172a; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid var(--border);">
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 0.4rem; font-weight: 500; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 0;">
+                                <input type="radio" name="leadSource" value="crm" checked onchange="toggleLeadSource('crm')" style="width: auto;">
+                                <span>Pacote do Lead Hunter (CRM)</span>
+                            </label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 0.4rem; font-weight: 500; font-size: 0.85rem; color: #38bdf8; margin-bottom: 0;">
+                                <input type="radio" name="leadSource" value="csv" onchange="toggleLeadSource('csv')" style="width: auto;">
+                                <span>📁 Upload Planilha CSV (Apenas Teste)</span>
+                            </label>
+                        </div>
+
+                        <!-- Opção 1: Pacote CRM -->
+                        <div id="sourceCrmArea">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                                <label for="searchId" style="margin-bottom: 0;">Pacote de Leads (Baseado no Lead Hunter)</label>
+                                <button type="button" onclick="loadSearches()" id="btnReloadSearches" style="background: #1e293b; border: 1px solid #475569; color: #94a3b8; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; cursor: pointer;">🔄 Atualizar</button>
+                            </div>
+                            <select id="searchId">
+                                <option value="">Carregando buscas do CRM...</option>
+                            </select>
+                        </div>
+
+                        <!-- Opção 2: CSV Upload (Teste) -->
+                        <div id="sourceCsvArea" style="display: none; padding: 1rem; background: rgba(56, 189, 248, 0.06); border: 1px dashed #38bdf8; border-radius: 8px;">
+                            <label for="csvFileInput" style="margin-bottom: 0.4rem; color: #38bdf8; font-weight: 600; display: block;">Selecione o arquivo CSV de teste:</label>
+                            <input type="file" id="csvFileInput" accept=".csv" style="padding: 0.5rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; width: 100%; color: #f8fafc;" onchange="handleCsvFile(event)">
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.4rem;">
+                                Aceita CSV com colunas <code>nome, telefone</code> (ou formato completo do Lead Hunter).
+                            </p>
+                            <div id="csvFeedback" style="margin-top: 0.5rem; font-size: 0.85rem; font-weight: 600;"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="messageBase">Mensagem de Abertura (Disparo 1)</label>
+                        <textarea id="messageBase" placeholder="Ex: {Olá|Oi|Bom dia} {nome}, tudo bem?" required></textarea>
+                        
+                        <div style="margin-top: 8px; padding: 8px 12px; background-color: #0f172a; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 0.8rem; line-height: 1.4;">
+                            <strong style="color: #60a5fa; display: block; margin-bottom: 3px;">🛡️ Blindagem Anti-Ban (Spintax & Variáveis)</strong>
+                            Use <code style="color: #facc15;">{Olá|Oi|Bom dia}</code> ou <code style="color: #facc15;">{tudo bem|como vai}</code> para que cada mensagem enviada seja única!<br>
+                            Use <code style="color: #facc15;">{nome}</code> para o primeiro nome e tags como <code style="color: #facc15;">{endereco}</code> ou <code style="color: #facc15;">{nota}</code>.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="messageVacuo">Mensagem de Retomada (Anti-Vácuo)</label>
+                        <textarea id="messageVacuo" placeholder="Ex: Oi {nome}, conseguiu ver a mensagem acima?" required></textarea>
+                    </div>
+
+                    <hr style="border-color: #334155; margin: 1.5rem 0;">
+
+                    <h2>🤖 Robô desta Campanha</h2>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 0.75rem;">Se o lead responder uma destas palavras, o robô assume e injeta no CRM.</p>
+                    
+                    <div id="botRulesContainer" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 0.75rem;"></div>
+
+                    <button type="button" class="btn" id="btnAddRule" style="background-color: #334155; margin-bottom: 1.5rem;">+ Adicionar Regra ao Robô</button>
+
+                    <button type="submit" id="btnStart" style="font-size: 1.05rem; padding: 1.1rem;">🚀 Iniciar Campanha na Fila Global</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- LADO DIREITO: MONITOR DA FILA CENTRAL & DASHBOARDS -->
+        <div>
+            <!-- MONITOR DA FILA CENTRAL ANTI-BAN -->
+            <div class="queue-monitor-card">
+                <div class="queue-header">
+                    <h2 style="margin: 0; color: #f8fafc; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        🚦 Fila Única Central (Anti-Ban)
+                    </h2>
+                    <span id="globalQueueBadge" class="queue-status-badge badge-paused">Ociosa</span>
+                </div>
+                
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid #334155; border-radius: 8px; padding: 0.85rem; margin-bottom: 0.75rem;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                        <span style="color: #94a3b8;">Campanha Atual:</span>
+                        <strong id="queueCurrentCamp" style="color: #38bdf8;">Nenhuma</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                        <span style="color: #94a3b8;">Lead em Foco:</span>
+                        <strong id="queueCurrentLead" style="color: #f8fafc;">Aguardando...</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem;">
+                        <span style="color: #94a3b8;">Chip Selecionado:</span>
+                        <strong id="queueCurrentChip" style="color: #10b981;">-</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span style="color: #94a3b8;">Próximo Disparo:</span>
+                        <strong id="queueNextSend" style="color: #f59e0b;">Em espera</strong>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.8rem; text-align: center;">
+                    <div style="background: #0f172a; padding: 0.4rem; border-radius: 6px; border: 1px solid #334155;">
+                        <span style="color: #94a3b8; display: block;">Campanhas Intercaladas</span>
+                        <strong id="queueActiveCampsCount" style="color: #38bdf8; font-size: 1.1rem;">0</strong>
+                    </div>
+                    <div style="background: #0f172a; padding: 0.4rem; border-radius: 6px; border: 1px solid #334155;">
+                        <span style="color: #94a3b8; display: block;">Leads Pendentes na Fila</span>
+                        <strong id="queuePendingLeadsCount" style="color: #a78bfa; font-size: 1.1rem;">0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard de Campanhas Ativas -->
+            <div class="card" style="margin-bottom: 1.75rem;">
+                <h2>📊 Campanhas Registradas</h2>
+                <div id="campaignsDashboard">
+                    <p style="color: #94a3b8; font-size: 0.9rem;">Nenhuma campanha em andamento.</p>
+                </div>
+            </div>
+
+            <!-- Terminal SSE -->
+            <div class="card" style="margin-bottom: 1.75rem;">
+                <h2>Monitor de Atividade em Tempo Real</h2>
+                <div class="terminal" id="terminal">
+                    <div class="log-line log-system">Aguardando início das operações...</div>
+                </div>
+            </div>
+            
+            <!-- Retomada de Vácuo & Filtro de Robôs -->
+            <div class="card" style="margin-bottom: 0;">
+                <h1>⏰ Retomada de Vácuo & Filtro de Robôs</h1>
+                <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 0.85rem;">O sistema filtra automaticamente mensagens de ausência e menus de chatbots para não continuar abordando robôs.</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+                    <div style="background: #0f172a; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid #334155;">
+                        <span style="font-size: 0.75rem; color: #94a3b8; display: block;">⏳ Aguardando Resposta</span>
+                        <strong id="countAguardando" style="font-size: 1.2rem; color: #38bdf8;">0</strong>
+                    </div>
+                    <div style="background: #0f172a; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid #334155;">
+                        <span style="font-size: 0.75rem; color: #fbbf24; display: block;">🤖 Robôs/Ausência Filtrados</span>
+                        <strong id="countBots" style="font-size: 1.2rem; color: #fbbf24;">0</strong>
+                    </div>
+                </div>
+
+                <button class="btn" id="btnStartFollowups" style="background-color: #f59e0b;">▶ Disparar Anti-Vácuo Multi-Chip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO DE CAMPANHA -->
+    <div id="editCampaignModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 1.5rem;">
+        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; width: 100%; max-width: 680px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); overflow: hidden;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid #334155; background: #0f172a;">
+                <h2 style="margin: 0; color: #f8fafc; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                    ✏️ Editar Campanha em Andamento
+                </h2>
+                <button type="button" onclick="closeEditModal()" style="width: auto; background: transparent; border: none; font-size: 1.6rem; color: #94a3b8; cursor: pointer; padding: 0 0.5rem; line-height: 1;">&times;</button>
+            </div>
+            
+            <form id="editCampaignForm" onsubmit="saveCampaignEdit(event)" style="overflow-y: auto; padding: 1.5rem; flex: 1;">
+                <input type="hidden" id="editCampaignId">
+
+                <div class="form-group">
+                    <label for="editCampaignName">Nome da Campanha</label>
+                    <input type="text" id="editCampaignName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editMessageBase">Mensagem de Abertura (Disparo 1)</label>
+                    <textarea id="editMessageBase" placeholder="Ex: {Olá|Oi} {nome}, tudo bem?" required style="min-height: 110px;"></textarea>
+                    <div style="margin-top: 8px; padding: 8px 12px; background-color: #0f172a; border-left: 3px solid #3b82f6; border-radius: 4px; font-size: 0.8rem; color: #94a3b8; line-height: 1.4;">
+                        <strong style="color: #60a5fa;">💡 Dica Anti-Ban:</strong> Use Spintax como <code style="color: #facc15;">{Olá|Oi|Bom dia}</code> e variáveis dinâmicas como <code style="color: #facc15;">{nome}</code>.<br>
+                        <em>As alterações passam a valer imediatamente para os próximos envios da fila central!</em>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editMessageVacuo">Mensagem de Retomada (Anti-Vácuo)</label>
+                    <textarea id="editMessageVacuo" placeholder="Ex: Oi {nome}, conseguiu ler a mensagem acima?" required style="min-height: 80px;"></textarea>
+                </div>
+
+                <hr style="border-color: #334155; margin: 1.5rem 0 1rem 0;">
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <div>
+                        <h3 style="font-size: 1rem; color: #f8fafc; margin: 0;">🤖 Regras do Robô da Campanha</h3>
+                        <p style="color: #94a3b8; font-size: 0.8rem; margin: 0;">Respostas automáticas disparadas por palavras-chave.</p>
+                    </div>
+                    <button type="button" class="btn-small" onclick="renderEditRule()" style="background-color: #334155; margin: 0;">+ Nova Regra</button>
+                </div>
+
+                <div id="editBotRulesContainer" style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;"></div>
+
+                <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1rem; border-top: 1px solid #334155; padding-top: 1.25rem;">
+                    <button type="button" onclick="closeEditModal()" class="btn-small" style="background: #475569; margin: 0; min-width: 100px;">Cancelar</button>
+                    <button type="submit" id="btnSaveEdit" class="btn-small" style="background: #10b981; margin: 0; min-width: 150px; font-weight: bold;">💾 Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('campaignForm');
+        const btnStart = document.getElementById('btnStart');
+        const terminal = document.getElementById('terminal');
+        const searchSelect = document.getElementById('searchId');
+        const dashboard = document.getElementById('campaignsDashboard');
+
+        // ==========================================
+        // GESTÃO DO CLUSTER MULTI-CHIP
+        // ==========================================
+        let allChipsData = {};
+        let activeChipTab = 'chip_1';
+
+        function switchChipTab(chipId) {
+            activeChipTab = chipId;
+            document.querySelectorAll('.chip-tab-btn').forEach(btn => btn.classList.remove('active'));
+            const targetBtn = Array.from(document.querySelectorAll('.chip-tab-btn')).find(b => b.getAttribute('onclick').includes(chipId));
+            if (targetBtn) targetBtn.classList.add('active');
+            renderChipDetail();
+        }
+
+        async function loadChips() {
+            try {
+                const res = await fetch('/api/chips');
+                const chips = await res.json();
+                allChipsData = chips;
+
+                let totalAtivos = 0;
+                for (const cid in chips) {
+                    const c = chips[cid];
+                    const dot = document.getElementById(`dot_${cid}`);
+                    if (dot) {
+                        dot.className = 'status-dot';
+                        if (!c.enabled) {
+                            dot.classList.add('dot-gray');
+                        } else if (c.inCoffeeBreakUntil && new Date(c.inCoffeeBreakUntil).getTime() > Date.now()) {
+                            dot.classList.add('dot-orange');
+                            totalAtivos++;
+                        } else if (c.isReady) {
+                            dot.classList.add('dot-green');
+                            totalAtivos++;
+                        } else if (c.runtimeStatus === 'qrcode' || c.runtimeStatus === 'connecting') {
+                            dot.classList.add('dot-yellow');
+                            totalAtivos++;
+                        } else {
+                            dot.classList.add('dot-gray');
+                        }
+                    }
+                }
+
+                const summaryEl = document.getElementById('activeChipsSummary');
+                if (summaryEl) summaryEl.textContent = `${totalAtivos}/5 Chips Ativos`;
+
+                renderChipDetail();
+            } catch (e) {
+                console.error('Erro ao carregar chips:', e);
+            }
+        }
+
+        function renderChipDetail() {
+            const area = document.getElementById('chipDetailArea');
+            const chip = allChipsData[activeChipTab];
+            if (!chip) {
+                area.innerHTML = '<p style="color: #94a3b8; text-align: center;">Chip não encontrado.</p>';
+                return;
+            }
+
+            const isCoffee = chip.inCoffeeBreakUntil && new Date(chip.inCoffeeBreakUntil).getTime() > Date.now();
+            const coffeeRemainingMin = isCoffee ? Math.ceil((new Date(chip.inCoffeeBreakUntil).getTime() - Date.now()) / 60000) : 0;
+            const quotaPercent = Math.min(100, Math.round(((chip.dailySent || 0) / (chip.dailyLimit || 40)) * 100));
+            const isNearLimit = quotaPercent >= 80;
+
+            let statusHtml = '';
+            if (!chip.enabled) {
+                statusHtml = '<span style="color: #94a3b8; font-weight: bold;">⚪ Desativado</span> (Ligue o chip para iniciar)';
+            } else if (isCoffee) {
+                statusHtml = `<span style="color: #f97316; font-weight: bold;">☕ Em Pausa Preventiva (Coffee Break)</span> - Descanso por mais ~${coffeeRemainingMin} min`;
+            } else if (chip.isReady) {
+                statusHtml = `<span style="color: var(--success); font-weight: bold;">🟢 Conectado</span>: +${chip.phone || 'WhatsApp Pronto'}`;
+            } else if (chip.runtimeStatus === 'qrcode' && chip.qrCode) {
+                statusHtml = `
+                    <div style="text-align: center;">
+                        <span style="color: #fbbf24; font-weight: bold; display: block; margin-bottom: 0.5rem;">📲 Escaneie o QR Code no WhatsApp deste Chip:</span>
+                        <div class="qr-box"><img src="${chip.qrCode}" alt="QR Code" style="width: 200px; height: 200px;"></div>
+                        <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.4rem;">Abra o WhatsApp > Aparelhos conectados > Conectar aparelho</p>
+                    </div>
+                `;
+            } else {
+                statusHtml = '<span style="color: #fbbf24; font-weight: bold;">⏳ Conectando...</span> Aguarde alguns instantes.';
+            }
+
+            area.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #334155; padding-bottom: 0.75rem;">
+                    <div>
+                        <strong style="font-size: 1.1rem; color: #f8fafc;">${chip.name}</strong>
+                        <span style="font-size: 0.75rem; color: #94a3b8; display: block;">ID: ${chip.id} | Sessão: ${chip.clientId}</span>
+                    </div>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin: 0; font-size: 0.85rem; font-weight: bold; color: ${chip.enabled ? '#10b981' : '#94a3b8'};">
+                        <input type="checkbox" ${chip.enabled ? 'checked' : ''} onchange="toggleChip('${chip.id}')" style="width: 18px; height: 18px; cursor: pointer;">
+                        <span>${chip.enabled ? 'Habilitado' : 'Desabilitado'}</span>
+                    </label>
+                </div>
+
+                <div style="margin-bottom: 1rem; background: #1e293b; padding: 0.85rem; border-radius: 6px; border: 1px solid #334155;">
+                    <div style="font-size: 0.9rem; margin-bottom: 0.4rem;">${statusHtml}</div>
+                </div>
+
+                <!-- Cota Diária -->
+                <div style="margin-bottom: 1rem; background: #1e293b; padding: 0.85rem; border-radius: 6px; border: 1px solid #334155;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #cbd5e1;">
+                        <span>Cota Diária de Envios</span>
+                        <strong>${chip.dailySent || 0} / ${chip.dailyLimit || 40} envios (${(chip.dailyLimit || 40) - (chip.dailySent || 0)} restantes)</strong>
+                    </div>
+                    <div class="quota-bar-bg">
+                        <div class="quota-bar-fill ${isNearLimit ? 'warning' : ''}" style="width: ${quotaPercent}%;"></div>
+                    </div>
+                </div>
+
+                <!-- Configurações Rápidas Anti-Ban do Chip -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <div>
+                        <label style="font-size: 0.75rem;">Limite Diário:</label>
+                        <input type="number" id="inputLimit_${chip.id}" value="${chip.dailyLimit || 40}" min="10" max="150" style="padding: 0.4rem;">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.75rem;">Pausa a cada (envios):</label>
+                        <input type="number" id="inputBreak_${chip.id}" value="${chip.coffeeBreakAfter || 6}" min="3" max="25" style="padding: 0.4rem;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                    <button type="button" class="btn-small" style="background: #334155;" onclick="saveChipConfig('${chip.id}')">💾 Salvar Limites</button>
+                    ${chip.enabled ? `<button type="button" class="btn-small btn-warning" onclick="restartChip('${chip.id}')">🔄 Destravar/Reconectar</button>` : ''}
+                </div>
+            `;
+        }
+
+        async function toggleChip(chipId) {
+            try {
+                const res = await fetch(`/api/chips/${chipId}/toggle`, { method: 'POST' });
+                await res.json();
+                loadChips();
+            } catch (e) {
+                alert('Erro ao alterar status do chip: ' + e.message);
+            }
+        }
+
+        async function restartChip(chipId) {
+            if (!confirm(`Deseja recarregar o WhatsApp deste chip para destravar?`)) return;
+            addLog(`Solicitando recarregamento do ${chipId}...`, 'warning');
+            try {
+                const res = await fetch(`/api/chips/${chipId}/restart`, { method: 'POST' });
+                const d = await res.json();
+                addLog(d.message || 'Chip recarregado.', 'info');
+                setTimeout(loadChips, 2000);
+            } catch (e) {
+                addLog('Erro ao recarregar: ' + e.message, 'error');
+            }
+        }
+
+        async function saveChipConfig(chipId) {
+            const limit = document.getElementById(`inputLimit_${chipId}`).value;
+            const breakAfter = document.getElementById(`inputBreak_${chipId}`).value;
+            try {
+                const res = await fetch(`/api/chips/${chipId}/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dailyLimit: limit, coffeeBreakAfter: breakAfter })
+                });
+                await res.json();
+                addLog(`Configurações de blindagem do ${chipId} salvas.`, 'success');
+                loadChips();
+            } catch (e) {
+                alert('Erro ao salvar: ' + e.message);
+            }
+        }
+
+        loadChips();
+        setInterval(loadChips, 4000);
+
+        // ==========================================
+        // MONITOR DA FILA CENTRAL
+        // ==========================================
+        async function loadGlobalQueueStatus() {
+            try {
+                const res = await fetch('/api/global-queue/status');
+                const q = await res.json();
+
+                const badge = document.getElementById('globalQueueBadge');
+                const campEl = document.getElementById('queueCurrentCamp');
+                const leadEl = document.getElementById('queueCurrentLead');
+                const chipEl = document.getElementById('queueCurrentChip');
+                const nextEl = document.getElementById('queueNextSend');
+                const actCountEl = document.getElementById('queueActiveCampsCount');
+                const pendCountEl = document.getElementById('queuePendingLeadsCount');
+
+                actCountEl.textContent = q.totalActiveCampaigns || 0;
+                pendCountEl.textContent = q.totalPendingLeads || 0;
+
+                campEl.textContent = q.currentCampaignName || 'Nenhuma';
+                leadEl.textContent = q.currentLeadName || (q.status === 'idle' ? 'Fila Ociosa' : 'Aguardando próximo lead...');
+                chipEl.textContent = q.currentChipName || '-';
+
+                badge.className = 'queue-status-badge';
+                if (q.status === 'sending') {
+                    badge.className += ' badge-running';
+                    badge.textContent = '🟢 Disparando';
+                    nextEl.textContent = 'Enviando agora...';
+                } else if (q.status === 'waiting_delay') {
+                    badge.className += ' badge-paused';
+                    badge.textContent = '⏳ Intervalo Seguro';
+                    if (q.nextSendAt) {
+                        const diffSec = Math.max(0, Math.round((new Date(q.nextSendAt).getTime() - Date.now()) / 1000));
+                        nextEl.textContent = `Em ${diffSec}s`;
+                    } else {
+                        nextEl.textContent = 'Calculando...';
+                    }
+                } else if (q.status === 'waiting_chips') {
+                    badge.className += ' badge-paused';
+                    badge.textContent = '☕ Chips em Pausa';
+                    nextEl.textContent = 'Aguardando chip liberar';
+                } else if (q.status === 'paused_outside_business_hours') {
+                    badge.className += ' badge-stopped';
+                    badge.textContent = '🌙 Fora do Expediente';
+                    nextEl.textContent = 'Pausado até 08:00';
+                } else {
+                    badge.className += ' badge-finished';
+                    badge.textContent = '⚪ Fila Ociosa';
+                    nextEl.textContent = 'Sem envios';
+                }
+            } catch (e) {}
+        }
+        setInterval(loadGlobalQueueStatus, 1500);
+
+        // ==========================================
+        // TERMINAL SSE
+        // ==========================================
+        function addLog(text, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            const time = new Date().toLocaleTimeString('pt-BR');
+            line.textContent = `[${time}] ${text}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function connectLogs() {
+            const source = new EventSource('/api/logs');
+            source.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                if (data.type === 'chip_qrcode_event' || data.type === 'chip_connected_event' || data.type === 'chip_disconnected_event') {
+                    loadChips();
+                } else {
+                    addLog(data.msg, data.type);
+                }
+            };
+        }
+        connectLogs();
+
+        // Sessão CRM
+        async function checkCrmSession() {
+            const area = document.getElementById('crmUserArea');
+            try {
+                const res = await fetch('/api/session');
+                const data = await res.json();
+                if (data.email) {
+                    area.innerHTML = `<span style="color: #94a3b8;">Vendedor CRM Conectado:</span> <strong style="color: var(--primary);">${data.email}</strong>`;
+                    loadSearches();
+                } else {
+                    area.innerHTML = `<span style="color: var(--error);">Sessão CRM não encontrada. Faça login no Lead Hunter.</span>`;
+                }
+            } catch (e) {
+                area.innerHTML = `<span style="color: var(--error);">Erro ao verificar CRM.</span>`;
+            }
+        }
+        checkCrmSession();
+
+        // Carregar Buscas do Lead Hunter
+        async function loadSearches() {
+            try {
+                const prevVal = searchSelect.value;
+                const res = await fetch('/api/searches');
+                const data = await res.json();
+                
+                if (data.error) {
+                    searchSelect.innerHTML = `<option value="">Erro: ${data.error}</option>`;
+                    return;
+                }
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    searchSelect.innerHTML = '<option value="">Nenhum pacote de leads encontrado. Faça buscas no Lead Hunter primeiro.</option>';
+                    return;
+                }
+                
+                let html = '<option value="">Selecione um pacote de leads...</option>';
+                data.forEach(s => {
+                    const date = new Date(s.created_at).toLocaleDateString('pt-BR');
+                    const selected = s.id === prevVal ? ' selected' : '';
+                    html += `<option value="${s.id}"${selected}>${s.query} em ${s.city} (${s.total_leads || 0} leads) - ${date}</option>`;
+                });
+                searchSelect.innerHTML = html;
+            } catch (e) {
+                searchSelect.innerHTML = '<option value="">Erro ao carregar dados do CRM</option>';
+            }
+        }
+        loadSearches();
+        searchSelect.addEventListener('focus', loadSearches);
+        setInterval(loadSearches, 15000);
+
+        let allCampaignsCache = {};
+
+        // Dashboard de Campanhas
+        async function loadCampaigns() {
+            try {
+                const res = await fetch('/api/campaigns');
+                const campaigns = await res.json();
+                allCampaignsCache = campaigns;
+                
+                const keys = Object.keys(campaigns).sort((a,b) => new Date(campaigns[b].started_at) - new Date(campaigns[a].started_at));
+                
+                if (keys.length === 0) {
+                    dashboard.innerHTML = '<p style="color: #94a3b8; font-size: 0.9rem;">Nenhuma campanha em andamento.</p>';
+                    return;
+                }
+                
+                dashboard.innerHTML = '';
+                keys.forEach(k => {
+                    const c = campaigns[k];
+                    let badge = '';
+                    let actionBtns = '';
+                    
+                    if (c.status === 'running') {
+                        badge = '<span class="campaign-badge badge-running">Na Fila Central</span>';
+                        actionBtns = `<button class="btn-small btn-warning" onclick="controlCampaign('${c.id}', 'pause')">Pausar</button>
+                                      <button class="btn-small btn-danger" onclick="controlCampaign('${c.id}', 'stop')">Parar</button>`;
+                    } else if (c.status === 'paused') {
+                        badge = '<span class="campaign-badge badge-paused">Pausada</span>';
+                        actionBtns = `<button class="btn-small" style="background:var(--success)" onclick="controlCampaign('${c.id}', 'resume')">Retomar</button>
+                                      <button class="btn-small btn-danger" onclick="controlCampaign('${c.id}', 'stop')">Parar</button>`;
+                    } else if (c.status === 'stopped') {
+                        badge = '<span class="campaign-badge badge-stopped">Cancelada</span>';
+                    } else if (c.status === 'finished') {
+                        badge = '<span class="campaign-badge badge-finished">Finalizada</span>';
+                    }
+
+                    actionBtns += `<button class="btn-small" style="background:#6366f1;" onclick="openEditModal('${c.id}')">✏️ Editar</button>`;
+                    
+                    dashboard.innerHTML += `
+                        <div class="campaign-item">
+                            <div class="campaign-header">
+                                <span class="campaign-title">${c.name}</span>
+                                ${badge}
+                            </div>
+                            <div class="stats-grid">
+                                <div class="stat-box"><div class="stat-val">${c.total}</div><div class="stat-label">Total</div></div>
+                                <div class="stat-box"><div class="stat-val" style="color:var(--success)">${c.sent}</div><div class="stat-label">Enviados</div></div>
+                                <div class="stat-box"><div class="stat-val" style="color:var(--error)">${c.errors}</div><div class="stat-label">Erros</div></div>
+                            </div>
+                            <div>${actionBtns}</div>
+                        </div>
+                    `;
+                });
+                
+            } catch (e) {}
+        }
+        setInterval(loadCampaigns, 3000);
+        loadCampaigns();
+        
+        window.controlCampaign = async function(id, action) {
+            await fetch(`/api/campaign/${action}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            });
+            loadCampaigns();
+        };
+
+        // Modal de Edição
+        window.openEditModal = function(campId) {
+            const camp = allCampaignsCache[campId];
+            if (!camp) {
+                alert('Campanha não encontrada no cache local.');
+                return;
+            }
+
+            document.getElementById('editCampaignId').value = camp.id;
+            document.getElementById('editCampaignName').value = camp.name || '';
+            document.getElementById('editMessageBase').value = camp.messageBase || '';
+            document.getElementById('editMessageVacuo').value = camp.messageVacuo || '';
+
+            const container = document.getElementById('editBotRulesContainer');
+            container.innerHTML = '';
+
+            const rules = camp.rules || [];
+            if (rules.length > 0) {
+                rules.forEach(r => renderEditRule(r.keywords, r.response, r.isHotLead));
+            } else {
+                renderEditRule('sim, quero, valor', 'Que maravilha {nome}! O próximo passo é...', true);
+            }
+
+            document.getElementById('editCampaignModal').style.display = 'flex';
+        };
+
+        window.closeEditModal = function() {
+            document.getElementById('editCampaignModal').style.display = 'none';
+        };
+
+        window.renderEditRule = function(keywords = '', response = '', isHotLead = false) {
+            const container = document.getElementById('editBotRulesContainer');
+            const div = document.createElement('div');
+            div.className = 'form-group bot-rule-box';
+            div.style.padding = '0.75rem';
+            div.style.background = '#0f172a';
+            div.style.border = '1px solid #334155';
+            div.style.borderRadius = '8px';
+            div.style.position = 'relative';
+
+            const checkedAttr = isHotLead ? 'checked' : '';
+
+            div.innerHTML = `
+                <button type="button" class="btnRemoveRule" style="position: absolute; top: 0.5rem; right: 0.5rem; width: auto; padding: 0.2rem 0.5rem; background: transparent; color: #ef4444; border: 1px solid #ef4444; cursor: pointer; border-radius: 4px;">X</button>
+                <label style="font-size: 0.8rem;">Se o lead digitar (separe por vírgula):</label>
+                <input type="text" class="bot-keywords" value="${keywords}" placeholder="ex: sim, quero" style="width: 100%; padding: 0.4rem; margin-bottom: 0.4rem; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 4px;" required>
+                <label style="font-size: 0.8rem;">O robô deve responder:</label>
+                <textarea class="bot-response" placeholder="O que o robô deve responder?" style="min-height: 70px; margin-bottom: 0.4rem;" required>${response}</textarea>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #34d399; margin-top: 0.4rem;">
+                    <input type="checkbox" class="bot-hotlead" ${checkedAttr} style="width: auto;">
+                    <span style="font-size: 0.8rem;">🔥 Marcar como Lead Quente (Enviar para Kanban)</span>
+                </label>
+            `;
+            div.querySelector('.btnRemoveRule').addEventListener('click', () => div.remove());
+            container.appendChild(div);
+        };
+
+        window.saveCampaignEdit = async function(e) {
+            e.preventDefault();
+            const btnSave = document.getElementById('btnSaveEdit');
+            const campId = document.getElementById('editCampaignId').value;
+            const name = document.getElementById('editCampaignName').value;
+            const messageBase = document.getElementById('editMessageBase').value;
+            const messageVacuo = document.getElementById('editMessageVacuo').value;
+
+            const ruleDivs = document.querySelectorAll('#editBotRulesContainer .bot-rule-box');
+            const rules = [];
+            ruleDivs.forEach(div => {
+                const keywords = div.querySelector('.bot-keywords').value;
+                const response = div.querySelector('.bot-response').value;
+                const isHotLead = div.querySelector('.bot-hotlead').checked;
+                if (keywords && response) rules.push({ keywords, response, isHotLead });
+            });
+
+            btnSave.disabled = true;
+            btnSave.textContent = 'Salvando...';
+
+            try {
+                const res = await fetch('/api/campaign/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: campId, name, messageBase, messageVacuo, rules })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    addLog(`[${name}] ✏️ Campanha atualizada com sucesso! A Fila Central já usará os novos parâmetros.`, 'success');
+                    closeEditModal();
+                    await loadCampaigns();
+                } else {
+                    alert('Erro ao atualizar: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (err) {
+                alert('Falha na comunicação: ' + err.message);
+            } finally {
+                btnSave.disabled = false;
+                btnSave.textContent = '💾 Salvar Alterações';
+            }
+        };
+
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('editCampaignModal');
+            if (e.target === modal) closeEditModal();
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeEditModal();
+        });
+
+        // Regras do Robô na criação
+        const botRulesContainer = document.getElementById('botRulesContainer');
+        function renderRule(keywords = '', response = '', isHotLead = false) {
+            const div = document.createElement('div');
+            div.className = 'form-group bot-rule-box';
+            div.style.padding = '0.75rem';
+            div.style.background = '#0f172a';
+            div.style.border = '1px solid #334155';
+            div.style.borderRadius = '8px';
+            div.style.position = 'relative';
+
+            const checkedAttr = isHotLead ? 'checked' : '';
+
+            div.innerHTML = `
+                <button type="button" class="btnRemoveRule" style="position: absolute; top: 0.5rem; right: 0.5rem; width: auto; padding: 0.2rem 0.5rem; background: transparent; color: #ef4444; border: 1px solid #ef4444;">X</button>
+                <label style="font-size: 0.8rem;">Se o lead digitar (separe por vírgula):</label>
+                <input type="text" class="bot-keywords" value="${keywords}" placeholder="ex: sim, quero" style="width: 100%; padding: 0.4rem; margin-bottom: 0.4rem; background: #1e293b; color: white; border: 1px solid #334155; border-radius: 4px;" required>
+                <label style="font-size: 0.8rem;">O robô deve responder:</label>
+                <textarea class="bot-response" placeholder="O que o robô deve responder?" style="min-height: 70px; margin-bottom: 0.4rem;" required>${response}</textarea>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: #34d399; margin-top: 0.4rem;">
+                    <input type="checkbox" class="bot-hotlead" ${checkedAttr} style="width: auto;">
+                    <span style="font-size: 0.8rem;">🔥 Marcar como Lead Quente (Enviar para Kanban)</span>
+                </label>
+            `;
+            div.querySelector('.btnRemoveRule').addEventListener('click', () => div.remove());
+            botRulesContainer.appendChild(div);
+        }
+        document.getElementById('btnAddRule').addEventListener('click', () => renderRule());
+        renderRule('sim, quero, valor', 'Que maravilha {nome}! O próximo passo é...', true);
+        renderRule('não, caro, não quero', 'Tudo bem! Agradeço a atenção.', false);
+
+        // Alternar origem de Leads (CRM vs CSV)
+        let parsedCsvLeads = [];
+
+        function toggleLeadSource(source) {
+            const crmArea = document.getElementById('sourceCrmArea');
+            const csvArea = document.getElementById('sourceCsvArea');
+            const searchId = document.getElementById('searchId');
+
+            if (source === 'csv') {
+                crmArea.style.display = 'none';
+                csvArea.style.display = 'block';
+                searchId.removeAttribute('required');
+            } else {
+                crmArea.style.display = 'block';
+                csvArea.style.display = 'none';
+                searchId.setAttribute('required', 'required');
+                parsedCsvLeads = [];
+                document.getElementById('csvFeedback').innerHTML = '';
+                document.getElementById('csvFileInput').value = '';
+            }
+        }
+
+        function handleCsvFile(e) {
+            const file = e.target.files[0];
+            const feedback = document.getElementById('csvFeedback');
+            if (!file) {
+                parsedCsvLeads = [];
+                feedback.innerHTML = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+                if (lines.length < 2) {
+                    feedback.innerHTML = '<span style="color: var(--error);">Arquivo CSV vazio ou sem cabeçalho.</span>';
+                    parsedCsvLeads = [];
+                    return;
+                }
+
+                const delimiter = lines[0].includes(';') ? ';' : ',';
+                const headers = lines[0].split(delimiter).map(h => h.trim().replace(/^["']|["']$/g, '').toLowerCase());
+
+                let idxNome = headers.findIndex(h => h.includes('nome') || h.includes('name'));
+                let idxTel = headers.findIndex(h => h.includes('tel') || h.includes('phone') || h.includes('contato') || h.includes('whatsapp'));
+
+                if (idxNome === -1) idxNome = 0;
+                if (idxTel === -1) idxTel = 1;
+
+                parsedCsvLeads = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const rawCols = lines[i].split(delimiter).map(c => c.trim().replace(/^["']|["']$/g, ''));
+                    if (rawCols.length <= Math.max(idxNome, idxTel)) continue;
+
+                    const nome = rawCols[idxNome] || 'Cliente';
+                    const telLimpo = (rawCols[idxTel] || '').replace(/\D/g, '');
+                    if (telLimpo.length >= 8) {
+                        const metadata = {};
+                        headers.forEach((h, colIdx) => {
+                            metadata[h] = rawCols[colIdx] || '';
+                        });
+                        parsedCsvLeads.push({ nome, telefone: telLimpo, metadata });
+                    }
+                }
+
+                if (parsedCsvLeads.length > 0) {
+                    feedback.innerHTML = `<span style="color: var(--success);">✓ ${parsedCsvLeads.length} leads prontos para teste!</span>`;
+                    addLog(`[CSV Teste] Carregados ${parsedCsvLeads.length} leads de ${file.name}`, "info");
+                } else {
+                    feedback.innerHTML = '<span style="color: var(--error);">Nenhum lead com telefone válido encontrado no CSV.</span>';
+                }
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // Iniciar Campanha
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const selectedSource = document.querySelector('input[name="leadSource"]:checked').value;
+            const campaignName = document.getElementById('campaignName').value;
+            const searchId = document.getElementById('searchId').value;
+            const messageBase = document.getElementById('messageBase').value;
+            const messageVacuo = document.getElementById('messageVacuo').value;
+
+            if (selectedSource === 'csv') {
+                if (!parsedCsvLeads || parsedCsvLeads.length === 0) {
+                    alert('Por favor, selecione um arquivo CSV de teste com leads válidos!');
+                    return;
+                }
+            } else {
+                if (!searchId) {
+                    alert('Por favor, selecione um Pacote de Leads do Lead Hunter!');
+                    return;
+                }
+            }
+
+            const ruleDivs = botRulesContainer.querySelectorAll('.bot-rule-box');
+            const rules = [];
+            ruleDivs.forEach(div => {
+                const keywords = div.querySelector('.bot-keywords').value;
+                const response = div.querySelector('.bot-response').value;
+                const isHotLead = div.querySelector('.bot-hotlead').checked;
+                if (keywords && response) rules.push({ keywords, response, isHotLead });
+            });
+
+            btnStart.disabled = true;
+            btnStart.textContent = "Injetando na Fila...";
+            
+            try {
+                const payload = {
+                    campaignName,
+                    searchId: selectedSource === 'csv' ? 'csv_test' : searchId,
+                    csvLeads: selectedSource === 'csv' ? parsedCsvLeads : null,
+                    messageBase,
+                    messageVacuo,
+                    botRulesJson: JSON.stringify(rules)
+                };
+
+                const response = await fetch('/api/campaign/start', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    addLog(`Sucesso: ${result.message}`, "success");
+                    loadCampaigns();
+                } else {
+                    addLog(`Erro: ${result.error}`, "error");
+                }
+            } catch (error) {
+                addLog(`Erro na requisição: ${error.message}`, "error");
+            } finally {
+                btnStart.disabled = false;
+                btnStart.textContent = "🚀 Iniciar Campanha na Fila Global";
+            }
+        });
+
+        // Follow-ups
+        document.getElementById('btnStartFollowups').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/followups/start', { method: 'POST' });
+                const data = await res.json();
+                alert(data.error ? data.error : data.message);
+                loadFollowupStats();
+            } catch (e) {
+                alert("Erro ao disparar follow-ups.");
+            }
+        });
+
+        async function loadFollowupStats() {
+            try {
+                const res = await fetch('/api/followups');
+                const data = await res.json();
+                const countAguarda = document.getElementById('countAguardando');
+                const countBot = document.getElementById('countBots');
+                if (countAguarda) countAguarda.textContent = data.pendentes || 0;
+                if (countBot) countBot.textContent = data.botsDetectados || 0;
+            } catch (e) {}
+        }
+        setInterval(loadFollowupStats, 5000);
+        loadFollowupStats();
+    </script>
+</body>
+</html>
