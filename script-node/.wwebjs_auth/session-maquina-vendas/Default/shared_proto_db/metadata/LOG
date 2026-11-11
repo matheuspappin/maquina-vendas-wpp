@@ -1,4 +1,0 @@
-2026/09/30-16:11:39.939 5160 Creating DB C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\shared_proto_db\metadata since it was missing.
-2026/09/30-16:11:40.063 5160 Reusing MANIFEST C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\shared_proto_db\metadata/MANIFEST-000001
-2026/09/30-16:11:40.064 5160 Recovering log #3
-2026/09/30-16:11:40.065 5160 Reusing old log C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\shared_proto_db\metadata/000003.log 

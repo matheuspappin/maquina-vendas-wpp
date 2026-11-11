@@ -64,3 +64,8 @@ logs/
 .claude-tmp/
 tmp/
 temp/
+
+# WhatsApp Web cache (nao vai pro git)
+.wwebjs_auth/
+.wwebjs_cache/
+*.db-journal

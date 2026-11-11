@@ -1,9 +1,0 @@
-2026/09/30-16:11:34.603 b3f4 Creating DB C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\Local Storage\leveldb since it was missing.
-2026/09/30-16:11:34.834 b3f4 Reusing MANIFEST C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\Local Storage\leveldb/MANIFEST-000001
-2026/09/30-16:11:34.836 b3f4 Recovering log #32
-2026/09/30-16:11:34.891 b3f4 Reusing old log C:\maquina-vendas-wpp\script-node\.wwebjs_auth\session-maquina-vendas\Default\Local Storage\leveldb/000032.log 
-2026/09/30-16:11:34.892 b3f4 Delete type=2 #5
-2026/09/30-16:11:34.892 b3f4 Delete type=2 #34
-2026/10/02-02:01:37.676 9384 Level-0 table #34: started
-2026/10/02-02:01:37.709 9384 Level-0 table #34: 15406 bytes OK
-2026/10/02-02:01:37.749 9384 Delete type=0 #32
